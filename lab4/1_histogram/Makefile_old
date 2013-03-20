@@ -1,0 +1,42 @@
+#
+# Linux makefile
+# Use with make 
+#
+
+
+.SUFFIXES: .o .asm .cpp .c
+
+AS=nasm
+ASFLAGS= -f elf -g -O1
+CFLAGS= -g 
+CC=gcc
+#CXX=g++
+#CXXFLAGS=
+
+.asm.o:
+	$(AS) $(ASFLAGS) $*.asm 
+
+#.cpp.o:
+#	$(CXX) -c $(CXXFLAGS) $*.cpp
+
+.c.o:
+	$(CC) -c $(CFLAGS) $*.c
+
+all: histogram
+
+histogram : histogram.o histogram_asm.o 
+	$(CC) $(CFLAGS) -o histogram histogram.o histogram_asm.o 
+
+
+histogram_ass.o : histogram_asm.asm
+
+
+histogram.o : histogram.c
+
+
+clean :
+	rm *.o
+
+debug :
+	#ddd -gdb ./histogram
+	kdbg ./histogram
