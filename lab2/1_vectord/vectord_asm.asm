@@ -40,8 +40,8 @@ loopee:
   pop ecx
   pop ebx
 
-  inc ebx
-  inc edx
+  add ebx,4
+  add edx,4
 
   dec ecx
   jmp loopee
