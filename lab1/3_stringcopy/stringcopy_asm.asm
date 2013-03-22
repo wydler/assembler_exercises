@@ -9,30 +9,41 @@ segment .data
 segment .bss
 
 segment .text
-        global  stringcopy
+
+global  stringcopy
 
 %define buf_in		[ebp+8]
 %define buf_out		[ebp+12]
-%define number      [ebp+16]
+%define number    [ebp+16]
 
 stringcopy:
-        enter   0,0               ; setup routine
-        pusha			          ; save register
+  enter   0,0           ; setup routine
+  pusha                 ; save register
+  
+  ; Adressen in Akkumulatoren laden
+  mov eax,buf_in
+  mov ebx,buf_out
+  mov ecx,0
+  jmp copy
 
-;Please continue
-
-     
-;End of your program
-
-	popa
-	mov eax,0		;return 0 = no error
-        leave
-	ret
+copy:
+  mov edx,[eax]
+  cmp edx,0
+  je end
+  inc ecx
+  
+end:
+  mov edx,number
+  mov [edx],ecx
+  popa
+  mov eax,0             ;return 0 = no error
+  leave
+  ret
 
 error:
 	popa
-        mov     eax, -1           ; return -1 = error
-        leave
+  mov     eax, -1           ; return -1 = error
+  leave
 	ret
 
 
