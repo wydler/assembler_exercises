@@ -18,24 +18,30 @@ segment .text
 
 
 multiply:
-        enter   0,0               ; setup routine
-        pusha			  ; save register
+  enter   0,0               ; setup routine
+  pusha                   ; save register
 
-;Please continue
+  ; Werte in Akkumulatoren laden
+  mov eax,value_a
+  mov edx,value_b
 
+  ; Ergebnisspeicher-Adresse in Akkumulator laden
+  mov ecx,result
+  
+  ; Werte multiplizieren
+  imul edx
+  
+  ; Ergebnis in Adresse schreiben
+  mov [ecx],eax
+  mov [ecx+4],edx
 
-;End of your program
-
-	popa
-        mov     eax, 0           ; return with no error
-        leave
-	ret
+  popa
+  mov     eax, 0           ; return with no error
+  leave
+  ret
 
 error:
-	popa
-        mov     eax, -1           ; return with error
-        leave
-	ret
-
-
-
+  popa
+  mov     eax, -1           ; return with error
+  leave
+  ret
