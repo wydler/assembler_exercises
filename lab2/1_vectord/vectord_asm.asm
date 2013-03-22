@@ -7,24 +7,50 @@ segment .text
 global  vectord_asm
 
 %define dimension	[ebp+8]
-%define y1		[ebp+12]
-%define y2		[ebp+16]
+%define y1				[ebp+12]
+%define y2				[ebp+16]
 %define distance2	[ebp+20]
 
 
 vectord_asm:
-        enter   0,0            ;setup routine
-        pusha			;save register
+  enter   0,0       ;setup routine
+  pusha							;save register
 	
-; Please continue here!
-	
-	
-; end of your program
+  mov ebx, y1
+  mov edx, y2
+  mov ecx, dimension
+
+loopee:
+  cmp ecx,0
+  jz end
+
+  mov eax,[ebx]
+  sub eax,[edx]
+
+  push ebx
+  push ecx
+  push edx
+
+  mov ecx, distance2
+  mov ebx,eax
+  imul ebx
+  add [ecx], eax
+
+  pop edx
+  pop ecx
+  pop ebx
+
+  inc ebx
+  inc edx
+
+  dec ecx
+  jmp loopee
 	                                                                                                                                                             
 
+end:
 	popa
-        mov     eax, 0          ;return to C
-        leave
+  mov     eax, 0          ;return to C
+  leave
 	ret
 
 error:
