@@ -27,14 +27,20 @@ stringcopy:
   jmp copy
 
 copy:
-  mov edx,[eax]
-  cmp edx,0
+  mov dl,[eax]
+  cmp dl,0
   je end
+
+  mov [ebx], dl
+  inc eax
+  inc ebx
   inc ecx
+  jmp copy
 
 end:
   mov edx,number
   mov [edx],ecx
+
   popa
   mov eax,0             ;return 0 = no error
   leave
