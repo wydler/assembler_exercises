@@ -16,35 +16,40 @@ vectord_asm:
   enter   0,0       ;setup routine
   pusha							;save register
 	
+  ;save vectors in register
   mov ebx, y1
   mov edx, y2
+  ;save dimesion into counter register
   mov ecx, dimension
 
 loopee:
-  cmp ecx,0
-  jz end
+  cmp ecx,0           ;check if dim 0
+  jz end              ;then jump to end
 
-  mov eax,[ebx]
-  sub eax,[edx]
+  mov eax,[ebx]       ;get first vector element
+  sub eax,[edx]       ;subtract the second from the first
 
+  ;save registers for further usage
   push ebx
   push ecx
   push edx
 
-  mov ecx, distance2
-  mov ebx,eax
-  imul ebx
-  add [ecx], eax
+  mov ecx, distance2  ;get distance pointer
+  mov ebx,eax         ;duplicate value of eax into ebx
+  imul ebx            ;sqrt
+  add [ecx], eax      ;add sqrt to distance
 
+  ;restore saved registers
   pop edx
   pop ecx
   pop ebx
 
+  ;increment vector pointers
   add ebx,4
   add edx,4
 
-  dec ecx
-  jmp loopee
+  dec ecx             ;decrement counter
+  jmp loopee          ;jump to loop start
 	                                                                                                                                                             
 
 end:
