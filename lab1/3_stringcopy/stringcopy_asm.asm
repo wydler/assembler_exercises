@@ -48,6 +48,3 @@ error:
         mov     eax, -1           ; return -1 = error
         leave
 	ret
-
-
-
