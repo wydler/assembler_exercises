@@ -21,7 +21,7 @@ int main()
   struct input_data myData;
 
   printf("How many values: ");
-  scanf("%d", &myData.count);
+  scanf("%hd", &myData.count);
   if (myData.count >255) {  
           myData.count=255;   //limit number of values 
           printf("Number of values limited to 255.\n"); 
@@ -30,13 +30,13 @@ int main()
   for (i=0;i<myData.count;i++)
   {
  	printf("Value %d: ",i);
-  	scanf("%d", &myData.values[i]);
+  	scanf("%hd", &myData.values[i]);
   }
 
   status = mean(&myData,&result);	// calls the assembly program
 
   if (status !=0) printf("Assembler routine returned error: %d\n",status);
-  else 	printf("The mean value is:%d \n",result);
+  else 	printf("The mean value is: %d \n",result);
 
    return 0;
 }
