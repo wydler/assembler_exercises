@@ -8,24 +8,41 @@ segment .text
 %define value_a		[ebp+8]
 
 convbin:
-        enter   0,0               ; setup routine
-        pusha			  ; save register
+	enter 0,0	; setup routine
+	pusha		; save register
 
 ;Please continue!
+	mov edx, value_a	; value in edx
 
+	mov ecx, result		; pointer to last char (string shall be reversed)
+	add ecx, 31
+
+	mov [ecx+1], byte 0	; null termination
+
+loopy:
+	mov eax, edx	; logical 'and' edx to get lowest bit
+	and eax, 1
+	jz isnull
+isset:
+	mov [ecx], byte '1'
+	jmp nextbit
+isnull:
+	mov [ecx], byte '0'
+nextbit:
+	cmp ecx, result	; exit loop on last bit
+	je done
+	dec ecx		; update pointer to output 'next' char
+	rcr edx, 1	; right shift value
+	jmp loopy
+done:
 ;end of your program
 
 	popa
-        mov     eax, 0           ; return back to C
-        leave
+	mov eax, 0	; return back to C
+	leave
 	ret
 error:
 	popa
-        mov     eax, -1           ; return back to C
-        leave
+	mov eax, -1	; return back to C
+	leave
 	ret
-
-
-
-
-
