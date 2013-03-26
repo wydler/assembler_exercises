@@ -29,7 +29,7 @@ loopy:
 	pusha
 	mov ecx, [eax]	;load y1 and y2
 	mov edx, [ebx]
-	add edx, ecx	;edx=y1+y2
+	sub edx, ecx	;edx=y1-y2
 	mov eax, edx	;setup (y1+y2)^2
 	mov ebx, edx
 	imul eax, ebx	;do square -> edx:eax
