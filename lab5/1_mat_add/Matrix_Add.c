@@ -92,6 +92,12 @@ int main()
 
   status = Ass_Matrix(&Matrix_A, &Matrix_B, &Matrix_Sum);
 
+  if( status )
+  {
+    printf("ERROR\n");
+    return status;
+  }
+
     /*
      * print out the result
      */

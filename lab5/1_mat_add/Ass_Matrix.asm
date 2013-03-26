@@ -50,22 +50,58 @@ segment .text
 %define column		[ebp-12]
 
 Ass_Matrix:
-        enter   12,0              ; setup routine
-        pusha			  ; save register
+	enter	12,0	; setup routine
+	pusha		; save register
 
-    
+	mov eax, Matrix_A
+	mov eax, [eax]		; Matrix_A.row
+	mov ebx, Matrix_B
+	mov ebx, [ebx]		; Matrix_B.row
+	cmp eax, ebx
+	jne fatal_error
 
+	mov ebx, Matrix_A
+	mov ebx, [ebx+2*4]	; Matrix_A.column
+	mov ecx, Matrix_B
+	mov ecx, [ecx+2*4]	; Matrix_B.column
+	cmp ebx, ecx
+	jne fatal_error
 
+	; rows in eax - cols in ebx
+
+	mov edx, Matrix_Sum
+	mov [edx], eax		; set Matrix_Sum.row
+	mov [edx+2*4], ebx	; set Matrix_Sum.column
+
+	mov ecx, 0
+loopy:
+	cmp ecx, 100
+	je done
+	pusha
+		mov eax, Matrix_A
+		add eax, 12		; eax now points to Matrix_A.mat
+		mov eax, [eax+ecx*2]	; load current element to eax
+		mov ebx, Matrix_B
+		add ebx, 12		; ebx now points to Matrix_B.mat
+		mov ebx, [ebx+ecx*2]	; load current element to ebx
+
+		add eax, ebx		; add both elements
+
+		mov ebx, Matrix_Sum
+		add ebx, 12
+		mov [ebx+ecx*2], eax
 	popa
-        mov     eax, 0            ; return back to C
-        leave
+	inc ecx
+	jmp loopy
+
+done:
+	popa
+	mov eax, 0	; return back to C
+	leave
 	ret
 
 fatal_error:
 	popa
-	mov 	eax, -1		  ; fatal error
+	mov eax, -1	; fatal error
 	leave
 	ret
-
-
-

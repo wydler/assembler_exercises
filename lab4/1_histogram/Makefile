@@ -7,8 +7,8 @@
 .SUFFIXES: .o .asm .cpp .c
 
 AS=yasm
-ASFLAGS= -f elf -g dwarf2
-CFLAGS= -g 
+ASFLAGS= -f elf32 -g dwarf2
+CFLAGS= -g -m32
 CC=gcc
 
 .asm.o:
