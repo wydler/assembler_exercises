@@ -42,12 +42,12 @@ loopee:
 	loopnz loopee           ; jump to loopee if ecx not zero
 
 done:
-	mov ecx, size
-	mov ebx, mean
-	mov eax, [ebx]
-	mov edx, 0
-	idiv ecx
-	mov [ebx], eax
+	mov ecx, size			; get size value
+	mov ebx, mean			; set mean pointer
+	mov eax, [ebx]			; set mean value
+	mov edx, 0				; reset edx register
+	idiv ecx				; (eax:edx)/ecx
+	mov [ebx], eax			; write mean value
 	popa
 	mov	eax, 0	;return to C
 	leave
