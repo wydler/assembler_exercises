@@ -11,32 +11,30 @@ convbin:
 	enter 0,0	; setup routine
 	pusha		; save register
 
-	mov edx, value_a	; value in edx
+	mov edx, value_a	; get value
+	mov ecx, result		; save result pointer
+	add ecx, 31			; increase pointer to last position
 
-	mov ecx, result		; pointer to last char (string shall be reversed)
-	add ecx, 31			; set pointer to last char
+	mov [ecx+1], byte 0
 
-	mov [ecx+1], byte 0	; null termination
-
-loopy:
-	mov eax, edx	; logical 'and' edx to get lowest bit
+loopee:
+	mov eax, edx
 	and eax, 1
-	jz isnull
-
-isset:
-	mov [ecx], byte '1'
-	jmp nextbit
-
-isnull:
+	cmp eax, 1
+	je setone
 	mov [ecx], byte '0'
-	jmp nextbit
+	jmp loopee_e
 
-nextbit:
-	cmp ecx, result	; exit loop on last bit
+setone:
+	mov [ecx], byte '1'
+	jmp loopee_e
+
+loopee_e:
+	cmp ecx, result
 	je done
-	dec ecx		; update pointer to output 'next' char
-	rcr edx, 1	; right shift value
-	jmp loopy
+	shr edx, 1
+	dec ecx
+	jmp loopee
 
 done:
 	popa
