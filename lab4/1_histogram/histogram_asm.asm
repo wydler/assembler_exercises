@@ -7,6 +7,7 @@ global  histogram_asm
 %define size		[ebp+8]
 %define random		[ebp+12]
 %define histogram	[ebp+16]
+%define mean		[ebp+20]
 
 histogram_asm:
 	enter 0, 0	;setup routine
@@ -14,11 +15,16 @@ histogram_asm:
 
 	mov ecx, size			; get size pointer
 	mov edx, random			; get random array pointer
-	
 
 loopee:
 	mov eax, [edx]			; get current random value
 	push edx				; save edx
+
+	mov ebx, mean			; get mean pointer
+	mov edx, [ebx]			; get mean value
+	add edx, eax			; add to sum
+	mov [ebx], edx			; write new value
+
 	mov edx, 4				; set edx to 4
 	mul edx					; multiply eax with edx
 	pop edx					; restore edx
@@ -36,6 +42,12 @@ loopee:
 	loopnz loopee           ; jump to loopee if ecx not zero
 
 done:
+	mov ecx, size
+	mov ebx, mean
+	mov eax, [ebx]
+	mov edx, 0
+	idiv ecx
+	mov [ebx], eax
 	popa
 	mov	eax, 0	;return to C
 	leave
