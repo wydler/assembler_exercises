@@ -13,34 +13,37 @@ global  mean
 
 mean:
   enter 0,0               ; setup routine
-  pusha			              ; save register
+  pusha                   ; save register
 
-  mov eax, 0              ; set register to 0
-  mov edx, myData         ; set pointer to data
+  mov eax, 0              ; reset eax register
+  mov ebx, 0              ; reset ebx register
+  mov edx, myData         ; set data pointer
   mov cx, [edx]           ; get count value
-  mov ebx, 0              ; set register to 0
 
 loopee:
-  add edx, 2              ; increment pointer position
-  mov bx, [edx]           ; get value as position
-  add eax, ebx            ; add value to others
-  loopnz loopee           ; loop until counter 0
+  add edx, 2              ; increase pointer +2
+  mov ax, [edx]           ; get value at pointer
+  cwde                    ; expand to 32-bit
+  add ebx, eax            ; add to sum
+  loopnz loopee           ; jump to loopee if cx not zero
 
 end:
-  mov ebx, myData         ; get data pointer
-  mov cx, [ebx]           ; get count value
-  mov edx, 0              ; set register to 0
-  idiv cx                 ; div sum by count
+  mov edx, myData         ; set data pointer
+  mov ecx, 0              ; reset ecx register
+  mov cx, [edx]           ; get count value
+  mov edx, 0              ; reset edx register
+  mov eax, ebx            ; move sum to eax register
+  idiv ecx                ; (eax:edx)/ecx
+  cwde                    ; expand to 32-bit
   mov ebx, result         ; get result pointer
-  mov [ebx], eax          ; save result to pointer
-	popa
+  mov [ebx], eax          ; write mean to pointer
+  popa
   mov eax, 0              ; return back to C
   leave
-	ret
+  ret
 
 error:
-	popa
-	mov eax, -1	; return back to C
-	leave
-	ret
-
+  popa
+  mov eax, -1 ; return back to C
+  leave
+  ret
