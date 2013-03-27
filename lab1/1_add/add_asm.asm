@@ -9,7 +9,7 @@ segment .bss
 
 segment .text
 
-        global  add_asm
+global  add_asm
 
 %define result		[ebp+16]
 %define value_b		[ebp+12]
@@ -17,15 +17,22 @@ segment .text
 
 
 add_asm:
-        enter   0,0               ; setup routine
-        pusha			  ; save register
+	enter   0,0               ; setup routine
+	pusha			  ; save register
 
-;Please continue
+	; Werte in Akkumulatoren laden
+	mov eax,value_a
+	mov ebx,value_b
 
+	; Werte addieren
+	add eax,ebx
 
-;End of your program
+	; Ergebnisspeicher-Adresse in Akkumulator laden
+	mov ecx,result
+	; Ergebnis in Adresse schreiben
+	mov [ecx],eax
 
 	popa
-        mov     eax, 0           ; return back to C
-        leave
+	mov     eax, 0           ; return back to C
+	leave
 	ret
