@@ -27,15 +27,15 @@ loopy:
 	cmp ecx, 0
 	jz done
 	pusha
-	mov ecx, [eax]	;load y1 and y2
-	mov edx, [ebx]
-	sub edx, ecx	;edx=y1-y2
-	mov eax, edx	;setup (y1+y2)^2
-	mov ebx, edx
-	imul eax, ebx	;do square -> edx:eax
-	mov ebx, distance2	;load pointer to distance
-	add eax, [ebx]		;add previous distance
-	mov [ebx], eax		;write back
+		mov ecx, [eax]	;load y1 and y2
+		mov edx, [ebx]
+		sub edx, ecx	;edx=y1-y2
+		mov eax, edx	;setup (y1+y2)^2
+		mov ebx, edx
+		imul eax, ebx	;do square -> edx:eax
+		mov ebx, distance2	;load pointer to distance
+		add eax, [ebx]		;add previous distance
+		mov [ebx], eax		;write back
 	popa
 	add eax, 4
 	add ebx, 4
