@@ -59,6 +59,7 @@ Ass_Matrix:
 	mov ebx, [ebx]		; Matrix_B.row
 	cmp eax, ebx
 	jne fatal_error
+	mov row, eax
 
 	mov ebx, Matrix_A
 	mov ebx, [ebx+2*4]	; Matrix_A.column
@@ -66,18 +67,22 @@ Ass_Matrix:
 	mov ecx, [ecx+2*4]	; Matrix_B.column
 	cmp ebx, ecx
 	jne fatal_error
-
-	; rows in eax - cols in ebx
+	mov column, eax
 
 	mov edx, Matrix_Sum
 	mov [edx], eax		; set Matrix_Sum.row
 	mov [edx+2*4], ebx	; set Matrix_Sum.column
+	mov eax, [edx+1*4]	; load Matrix_Sum.maxcolumn
+	mov maxcolumn, eax
 
-	mov ecx, 0
+	mov eax, 0		; current row
+	mov ebx, 0		; current column
+	mov ecx, 0		; current index
 loopy:
-	cmp ecx, 100
+	cmp eax, row		; if all rows copied
 	je done
-	pusha
+nextcol:
+	pusha	; ecx holds index to copy
 		mov eax, Matrix_A
 		add eax, 12		; eax now points to Matrix_A.mat
 		mov eax, [eax+ecx*2]	; load current element to eax
@@ -88,10 +93,19 @@ loopy:
 		add eax, ebx		; add both elements
 
 		mov ebx, Matrix_Sum
-		add ebx, 12
-		mov [ebx+ecx*2], eax
+		add ebx, 12		; ebx now points to Matrix_Sum.mat
+		mov [ebx+ecx*2], eax	; write sum back
 	popa
-	inc ecx
+	inc ecx		; increment index
+	inc ebx		; increment column counter
+	cmp ebx, column	; if column copied
+	je nextrow
+	jmp nextcol
+nextrow:
+	inc eax			; increment row counter
+	add ecx, maxcolumn	; go down one element
+	sub ecx, ebx		; go to leftmost element
+	mov ebx, 0		; reset column counter
 	jmp loopy
 
 done:
