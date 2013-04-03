@@ -54,45 +54,55 @@ Ass_Matrix:
 	pusha		; save register
 
 	mov eax, Matrix_A
-	mov eax, [eax]		; Matrix_A.row
+	mov eax, [eax]			; rows of matrix a
 	mov ebx, Matrix_B
-	mov ebx, [ebx]		; Matrix_B.row
+	mov ebx, [ebx]			; rows of matrix b
 	cmp eax, ebx
 	jne fatal_error
 
-	mov ebx, Matrix_A
-	mov ebx, [ebx+2*4]	; Matrix_A.column
-	mov ecx, Matrix_B
-	mov ecx, [ecx+2*4]	; Matrix_B.column
-	cmp ebx, ecx
+	mov eax, Matrix_A
+	mov eax, [eax+8]			; cols of matrix a
+	mov ebx, Matrix_B
+	mov ebx, [ebx+8]			; cols of matrix b
+	cmp eax, ebx
 	jne fatal_error
 
-	; rows in eax - cols in ebx
+	mov eax, Matrix_A		
+	mov ecx, [eax]			; rows of matrix
+	mov edx, 0				; current pointer value
 
-	mov edx, Matrix_Sum
-	mov [edx], eax		; set Matrix_Sum.row
-	mov [edx+2*4], ebx	; set Matrix_Sum.column
-
-	mov ecx, 0
-loopy:
-	cmp ecx, 100
-	je done
-	pusha
+row_loop:
+	push ecx
+	push edx
 		mov eax, Matrix_A
-		add eax, 12		; eax now points to Matrix_A.mat
-		mov eax, [eax+ecx*2]	; load current element to eax
+		mov ecx, [eax+8]		; cols of matrix b
+
+col_loop:
+		mov eax, Matrix_A
+		add eax, 12
+		add eax, edx			; offset
+		mov ax, [eax]			; cols of matrix a
 		mov ebx, Matrix_B
-		add ebx, 12		; ebx now points to Matrix_B.mat
-		mov ebx, [ebx+ecx*2]	; load current element to ebx
-
-		add eax, ebx		; add both elements
-
-		mov ebx, Matrix_Sum
 		add ebx, 12
-		mov [ebx+ecx*2], eax
-	popa
-	inc ecx
-	jmp loopy
+		add ebx, edx			; offset
+		mov bx, [ebx]			; cols of matrix b
+
+		add ax, bx
+
+		mov ebx, Matrix_Sum		; get matrix pointer
+		add ebx, 12
+		add ebx, edx			; offset
+		mov [ebx], ax 			; write add value
+
+		add edx, 2 				; inc col
+		loopnz col_loop
+
+row_loop_end:
+	pop edx
+	pop ecx
+
+	add edx, 20					; inc row
+	loopnz row_loop           ; jump to loopee if cx not zero
 
 done:
 	popa
